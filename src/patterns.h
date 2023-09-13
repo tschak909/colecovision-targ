@@ -20,5 +20,7 @@ void patterns_box(unsigned char n);
  */
 void pattern_lives(unsigned char n);
 
+extern const unsigned char _targ_left_patterns[];
+extern const unsigned char _targ_right_patterns[];
 
 #endif /* PATTERNS_H */
