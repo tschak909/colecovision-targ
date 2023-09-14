@@ -22,5 +22,6 @@ void pattern_lives(unsigned char n);
 
 extern const unsigned char _targ_left_patterns[];
 extern const unsigned char _targ_right_patterns[];
+extern const unsigned char _targ_down_patterns[];
 
 #endif /* PATTERNS_H */

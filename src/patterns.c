@@ -421,6 +421,16 @@ const unsigned char _targ_right_patterns[]=
     0b11111000,
     0b11100000,
     0b10000000,
+
+    // color/attribute data
+    0x64,
+    0x64,
+    0x64,
+    0x64,
+    0x64,
+    0x64,
+    0x64,
+    0x64,
   };
 
 static const unsigned char _targ_up_patterns[]=
@@ -578,7 +588,7 @@ static const unsigned char _targ_up_patterns[]=
     0b11100111
   };
 
-static const unsigned char _targ_down_patterns[]=
+const unsigned char _targ_down_patterns[]=
   {
     // frame 0
     0b11000011,
@@ -730,5 +740,15 @@ static const unsigned char _targ_down_patterns[]=
     0b00111100,
     0b00011000,
     0b00011000,
-    0b00000000
+    0b00000000,
+    
+    // color/attribute data
+    0x64,
+    0x64,
+    0x64,
+    0x64,
+    0x64,
+    0x64,
+    0x64,
+    0x64,
   };

@@ -10,55 +10,86 @@
 #include <os7.h>
 #include "patterns.h"
 
-
-struct _targGraphics
-{
-  unsigned char obj_type;
-  unsigned char first_gen_name;
-  unsigned char numgen;
-  void *generators;
-  Frame *frame[8];
-};
-
-struct _targFrame
-{
-  unsigned char x_extent;
-  unsigned char y_extent;
-  unsigned char generator_0;
-  unsigned char generator_1;
-};
+SMOFrame(2) TargFrame;
+SMOOldScreen(2) TargOldScreen;
+SMOGraphics(8,TargFrame) TargGraphics;
 
 // Extents must be at least 1, 0 causes a pre-decrement wrap to 255
-const struct _targFrame targFrame0 = {2,1,0x60,0x61};
-const struct _targFrame targFrame1 = {2,1,0x62,0x63};
-const struct _targFrame targFrame2 = {2,1,0x64,0x65};
-const struct _targFrame targFrame3 = {2,1,0x66,0x67};
-const struct _targFrame targFrame4 = {2,1,0x68,0x69};
-const struct _targFrame targFrame5 = {2,1,0x6A,0x6B};
-const struct _targFrame targFrame6 = {2,1,0x6C,0x6D};
-const struct _targFrame targFrame7 = {2,1,0x6E,0x6F};
+// The frame objects.
+const TargFrame targFrame0 = {1,2,{0x60,0x61}};
+const TargFrame targFrame1 = {1,2,{0x62,0x63}};
+const TargFrame targFrame2 = {1,2,{0x64,0x65}};
+const TargFrame targFrame3 = {1,2,{0x66,0x67}};
+const TargFrame targFrame4 = {1,2,{0x68,0x69}};
+const TargFrame targFrame5 = {1,2,{0x6a,0x6b}};
+const TargFrame targFrame6 = {1,2,{0x6c,0x6d}};
+const TargFrame targFrame7 = {1,2,{0x6e,0x6f}};
 
-const struct _targGraphics targGraphics={0,0x60,16,_targ_right_patterns,{targFrame0,targFrame1,targFrame2,targFrame3,targFrame4,targFrame5,targFrame6,targFrame7}};
+// The Targ graphic object
+TargGraphics targGraphics=
+  {
+    0,
+    0x60,
+    16,
+    _targ_down_patterns,
+    {targFrame0,targFrame1,targFrame2,targFrame3,targFrame4,targFrame5,targFrame6,targFrame7}
+  };
 
-Status targStatus;
-unsigned char targOldScreen[2];
-const SMO targSMO={targGraphics,targStatus,targOldScreen};
+// The 10 targStatus objects (x, y, frame, etc.)
+SMOStatus targStatus[10];
 
-int i=0;
+// The 10 targOldScreen objects (see above)
+TargOldScreen targOldScreen[10];
 
+// The 10 top level SEMI-MOBILE objects
+SMO targSMO[10];
+
+/**
+ * @brief since SMO is in RAM, we have to initialize it dynamically
+ */
+void targ_init(void)
+{
+  for (int i=0;i<10;i++)
+    {
+      targSMO[i].graphics_addr=&targGraphics;
+      targSMO[i].status_addr=&targStatus[i];
+      targSMO[i].old_screen_addr=&targOldScreen[i];
+    }
+}
+
+/**
+ * @brief plot 10 targs, and go down the screen
+ */
 void targ(void)
 {
-  SignalNum wait;
-  
-  activate(&targSMO,false);
-  
-  for (i=0;i<256;i++)
+  targ_init();
+
+  // Set initial positions
+  for (int i=0;i<10;i++)
     {
-      targStatus.x++;
-      targStatus.frame++;
-      targStatus.frame &= 0x07;
-      
-      activate(&targSMO,true);
-      put_obj(&targSMO);
+      activate(&targSMO[i],false);
+      targStatus[i].x=(i*24)+16;
+      targStatus[i].y=40;
+      targStatus[i].frame=0;
+    }
+
+  // The main loop here, update position
+  while(true)
+    {
+      for (int i=0;i<10;i++)
+	{
+	  if (targStatus[i].frame==0x07)
+	    {
+	      targStatus[i].frame=0;
+	      targStatus[i].y+=8;
+	      if (targStatus[i].y>160)
+		return;
+	    }
+	  else
+	    targStatus[i].frame++;
+
+	  put_obj(&targSMO[i]);
+	}
+
     }
 }

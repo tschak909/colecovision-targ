@@ -29,6 +29,6 @@ void game(void)
   scores();
   nametable_board(BOARD_POS);
   blank(true);
-  targ();
-  while(1);
+  while(1)
+    targ();
 }

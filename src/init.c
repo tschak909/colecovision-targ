@@ -14,10 +14,12 @@
 
 TimerTable tt[2];
 TimerData td[2];
+unsigned char queue[48];
 
 static void vdp_nmi(void)
 {
   M_PRESERVE_ALL;
+  writer();
   time_mgr();
   M_RESTORE_ALL;
 }
@@ -25,5 +27,6 @@ static void vdp_nmi(void)
 void init(void)
 {
   init_timer(&tt,&td);
+  init_writer(queue,16);
   add_raster_int(vdp_nmi);
 }
