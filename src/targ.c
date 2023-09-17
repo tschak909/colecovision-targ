@@ -26,7 +26,7 @@ const TargFrame targFrame6 = {1,2,{0x6c,0x6d}};
 const TargFrame targFrame7 = {1,2,{0x6e,0x6f}};
 
 // The Targ graphic object
-TargGraphics targGraphics=
+const TargGraphics targGraphics=
   {
     0,
     0x60,
@@ -88,7 +88,7 @@ void targ(void)
 	  else
 	    targStatus[i].frame++;
 
-	  put_obj(&targSMO[i]);
+	  put_obj(&targSMO[i],0);
 	}
 
     }
