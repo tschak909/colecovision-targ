@@ -433,7 +433,7 @@ const unsigned char _targ_right_patterns[]=
     0x64,
   };
 
-static const unsigned char _targ_up_patterns[]=
+const unsigned char _targ_up_patterns[]=
   {
     // frame 0
     0b00011000,

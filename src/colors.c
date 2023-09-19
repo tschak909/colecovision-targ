@@ -19,7 +19,7 @@ static const unsigned char colors[32]=
     0xF4,
     0xF4,
     0xF4,
-    0xF4,
+    0x64, // 5 for bonus
     0x64,
     0x64,
     0xF4,

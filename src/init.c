@@ -12,7 +12,7 @@
 #include <os7.h>
 #include "init.h"
 
-TimerTable tt[2];
+TimerTable tt[8];
 TimerData td[2];
 unsigned char queue[48];
 

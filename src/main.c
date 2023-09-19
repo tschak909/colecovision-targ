@@ -10,10 +10,11 @@
 #include <os7.h>
 #include "init.h"
 #include "game.h"
+#include "bonus.h"
 
 void main(void)
 {
   init();
-  game();
-  while(1);
+  while(1)
+    bonus(3,3);
 }
