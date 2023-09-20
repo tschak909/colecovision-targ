@@ -239,20 +239,4 @@ void bonus(unsigned char extra_digit, unsigned char bonus_digit)
       put_vram(PATTERN_GENERATOR_TABLE,'/',block_pattern,1);
       put_vram(PATTERN_COLOR_TABLE,0x05,&color,1);
     }
-  
-  /* bonus_wait = request_signal(BONUS_FRAME_COUNT,false); */
-
-  /* // Static the extra point tile */
-  /* while (!test_signal(bonus_wait)) */
-  /*   { */
-  /*     unsigned char color = rand(); */
-  /*     SignalNum frame_wait = request_signal(1,false); */
-      
-  /*     for (unsigned char i=0;i<8;i++) */
-  /* 	block_pattern[i] = rand(); */
-      
-  /*     put_vram(PATTERN_GENERATOR_TABLE,'/',block_pattern,1); */
-  /*     put_vram(PATTERN_COLOR_TABLE,0x05,&color,1); */
-  /*     while (!test_signal(frame_wait)); */
-  /*   } */
 }
