@@ -143,8 +143,7 @@ static const char *_points[12]= "<  0 POINTS";
  */
 void bonus(unsigned char extra_digit, unsigned char bonus_digit)
 {
-  SignalNum bonus_wait;
-  unsigned char framecnt = BONUS_FRAME_COUNT;
+  SignalNum wait;
   unsigned char block_pattern[8] =
     {
       0b11111111,
@@ -206,19 +205,54 @@ void bonus(unsigned char extra_digit, unsigned char bonus_digit)
   write_register(0x01,0xE0);
   write_register(0x07,0x04);
 
-  bonus_wait = request_signal(BONUS_FRAME_COUNT,false);
-
-  // Static the extra point tile
-  while (!test_signal(bonus_wait))
+  // RED
+  wait = request_signal(30,false);
+  
+  while (!test_signal(wait))
     {
-      unsigned char color = rand();
-      SignalNum frame_wait = request_signal(1,false);
+      unsigned char color = 0x64;
+
+      put_vram(PATTERN_COLOR_TABLE,0x05,&color,1);
+    }
+
+  // RED/YELLOW FLASHING
+  for (unsigned i=0;i<8;i++)
+    {
+      unsigned char color = i % 2 ? 0x64 : 0xB4;
+
+      put_vram(PATTERN_COLOR_TABLE,0x05,&color,1);
+      wait = request_signal(4,false);
+
+      while (!test_signal(wait));
+    }
+
+  // Yellow static
+  wait = request_signal(120,false);
+
+  while (!test_signal(wait))
+    {
+      unsigned char color = 0xB4;
       
       for (unsigned char i=0;i<8;i++)
-	block_pattern[i] = rand();
-      
+	block_pattern[i]=rand();
+
       put_vram(PATTERN_GENERATOR_TABLE,'/',block_pattern,1);
       put_vram(PATTERN_COLOR_TABLE,0x05,&color,1);
-      while (!test_signal(frame_wait));
     }
+  
+  /* bonus_wait = request_signal(BONUS_FRAME_COUNT,false); */
+
+  /* // Static the extra point tile */
+  /* while (!test_signal(bonus_wait)) */
+  /*   { */
+  /*     unsigned char color = rand(); */
+  /*     SignalNum frame_wait = request_signal(1,false); */
+      
+  /*     for (unsigned char i=0;i<8;i++) */
+  /* 	block_pattern[i] = rand(); */
+      
+  /*     put_vram(PATTERN_GENERATOR_TABLE,'/',block_pattern,1); */
+  /*     put_vram(PATTERN_COLOR_TABLE,0x05,&color,1); */
+  /*     while (!test_signal(frame_wait)); */
+  /*   } */
 }
