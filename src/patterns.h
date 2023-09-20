@@ -28,4 +28,11 @@ extern const unsigned char _targ_right_patterns[];
 extern const unsigned char _targ_down_patterns[];
 extern const unsigned char _targ_up_patterns[];
 
+/**
+ * @brief External references for the Wummel sprite patterns
+ */
+extern const unsigned char wummel_left_pattern[8];
+extern const unsigned char wummel_right_pattern[8];
+extern const unsigned char wummel_down_pattern[8];
+extern const unsigned char wummel_up_pattern[8];
 #endif /* PATTERNS_H */

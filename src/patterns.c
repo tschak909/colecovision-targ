@@ -752,3 +752,51 @@ const unsigned char _targ_down_patterns[]=
     0x64,
     0x64,
   };
+
+const unsigned char wummel_left_pattern[8] =
+  {
+    0b01110111,
+    0b00100010,
+    0b11111111,
+    0b10111111,
+    0b10111111,
+    0b11111111,
+    0b00100010,
+    0b01110111,
+  };
+
+const unsigned char wummel_right_pattern[8] =
+  {
+    0b11101110,
+    0b01000100,
+    0b11111111,
+    0b11111101,
+    0b11111101,
+    0b11111111,
+    0b01000100,
+    0b11101110
+  };
+
+const unsigned char wummel_up_pattern[8] =
+  {
+    0b00111100,
+    0b10100101,
+    0b11111111,
+    0b10111101,
+    0b00111100,
+    0b10111101,
+    0b11111111,
+    0b10111101
+  };
+
+const unsigned char wummel_down_pattern[8] =
+  {
+    0b10111101,
+    0b11111111,
+    0b10111101,
+    0b00111100,
+    0b10111101,
+    0b11111111,
+    0b10100101,
+    0b00111100
+  };

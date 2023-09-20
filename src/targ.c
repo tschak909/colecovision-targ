@@ -42,7 +42,7 @@ SMOStatus targStatus[10];
 TargOldScreen targOldScreen[10];
 
 // The 10 top level SEMI-MOBILE objects
-SMO targSMO[10];
+const SMO targSMO[10];
 
 /**
  * @brief since SMO is in RAM, we have to initialize it dynamically

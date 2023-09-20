@@ -16,5 +16,5 @@ void main(void)
 {
   init();
   while(1)
-    bonus(3,3);
+    game();
 }
