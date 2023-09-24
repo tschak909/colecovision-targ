@@ -10,23 +10,23 @@
 #include <arch/z80.h>
 #include <intrinsic.h>
 #include <os7.h>
+#include <stdbool.h>
 #include "init.h"
+
 
 TimerTable tt[8];
 TimerData td[2];
-unsigned char queue[48];
 
 static void vdp_nmi(void)
 {
   M_PRESERVE_ALL;
-  writer();
   time_mgr();
+  VDP_STATUS_BYTE = read_register();
   M_RESTORE_ALL;
 }
 
 void init(void)
 {
   init_timer(&tt,&td);
-  init_writer(queue,16);
   add_raster_int(vdp_nmi);
 }

@@ -30,5 +30,5 @@ void game(void)
   nametable_board(BOARD_POS);
   blank(true);
   while(1)
-    wummel();
+    targ();
 }

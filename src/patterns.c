@@ -741,6 +741,26 @@ const unsigned char _targ_down_patterns[]=
     0b00011000,
     0b00011000,
     0b00000000,
+
+    // frame 8
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+
+    0b11000011,
+    0b11100111,
+    0b01111110,
+    0b01111110,
+    0b00111100,
+    0b00111100,
+    0b00011000,
+    0b00011000,
+    
     
     // color/attribute data
     0x64,
@@ -751,6 +771,7 @@ const unsigned char _targ_down_patterns[]=
     0x64,
     0x64,
     0x64,
+    0x64
   };
 
 const unsigned char wummel_left_pattern[8] =
