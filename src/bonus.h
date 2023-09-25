@@ -10,6 +10,7 @@
 #define BONUS_H
 
 /**
+ * @file bonus.h
  * @brief Show BONUS/EXTRA POINTS screen, with requested point values
  * @param extra_digit, large digit to show (0-9)
  * @param bonus_digit, bonus digit to show (0-9)

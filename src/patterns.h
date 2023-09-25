@@ -1,4 +1,5 @@
 /**
+ * @file patterns.h
  * @brief Targ example using os7lib
  * @author Thomas Cherryhomes
  * @email thom dot cherryhomes at gmail dot com

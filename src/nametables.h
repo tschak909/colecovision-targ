@@ -1,4 +1,5 @@
 /**
+ * @file nametables.h
  * @brief Targ example using os7lib
  * @author Thomas Cherryhomes
  * @email thom dot cherryhomes at gmail dot com
@@ -11,7 +12,7 @@
 
 /**
  * @brief Place game board nametable starting at position n
- * @param the position in the nametable (0-767)
+ * @param n the position in the nametable (0-767)
  */
 void nametable_board(unsigned short n);
 
