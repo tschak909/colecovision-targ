@@ -74,6 +74,9 @@ void targ(void)
       targStatus[i].frame=0;
     }
 
+  // I turn this on, and all hell breaks loose. Why?!
+  /* DEFER_WRITES=true; */
+  
   // The main loop here, update position
   while(true)
     {
