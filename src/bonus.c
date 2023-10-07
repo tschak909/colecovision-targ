@@ -9,6 +9,7 @@
 
 #include <os7.h>
 #include <ctype.h> // for toascii()
+#include <stdlib.h> // for rand(), replace with RANDOM NUMBER OS7 call
 #include "colors.h"
 #include "bonus.h"
 #include "patterns.h"
@@ -169,7 +170,7 @@ void bonus(unsigned char extra_digit, unsigned char bonus_digit)
   put_vram(PATTERN_GENERATOR_TABLE,'/',block_pattern,1);
 
   // Replace < with up-facing Targ rider
-  put_vram(PATTERN_GENERATOR_TABLE,'<',_targ_up_patterns,1);
+  put_vram(PATTERN_GENERATOR_TABLE,'<',targ_generators,1);
   
   // Set color palette
   set_colors();

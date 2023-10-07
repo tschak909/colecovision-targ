@@ -24,10 +24,7 @@ void pattern_lives(unsigned char n);
 /**
  * @brief External references so other parts of program can use targ patterns, e.g. bonus
  */
-extern const unsigned char _targ_left_patterns[];
-extern const unsigned char _targ_right_patterns[];
-extern const unsigned char _targ_down_patterns[];
-extern const unsigned char _targ_up_patterns[];
+extern const unsigned char targ_generators[32];
 
 /**
  * @brief External references for the Wummel sprite patterns

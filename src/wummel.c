@@ -26,11 +26,18 @@ static const SprObj wummel_obj_right = {wummel_graphics_right,wummel_status,0};
 static const SprObj wummel_obj_up = {wummel_graphics_up,wummel_status,0};
 static const SprObj wummel_obj_down = {wummel_graphics_down,wummel_status,0};
 
+/**
+ * @brief reset wummel position to home
+ */
 void wummel_reset(void)
 {
   wummel_status.x=WUMMEL_RESET_X;
   wummel_status.y=WUMMEL_RESET_Y;
 }
+
+/**
+ * @brief update wummel position/velocity
+ */
 void wummel(void)
 {
   wummel_status.x=220;

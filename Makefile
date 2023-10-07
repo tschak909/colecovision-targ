@@ -11,7 +11,7 @@ OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
 CFLAGS=+coleco -I../os7lib/src
-LDFLAGS=+coleco -m -s -pragma-define:CRT_ENABLE_STDIO=0 -pragma-define:REGISTER_SP=0x73B8  -pragma-define:CLIB_FOPEN_MAX=0 -pragma-define:fputc_cons=0 -pragma-define:CLIB_DEFAULT_SCREEN_MODE=-1 -L../os7lib -los7 -o$(TARGET_EXEC) -create-app 
+LDFLAGS=+coleco -m -s -pragma-define:CRT_ORG_BSS=0x702C -pragma-define:CRT_COLECO_SPRITE_NAME_SIZE=128 -pragma-define:CRT_COLECO_SPRITE_ORDER_SIZE=32 -pragma-define:CRT_COLECO_BIOS_BUFFER_SIZE=32 -pragma_define:CRT_COLECO_BIOS_CONTROLLER_SIZE=12 -pragma-define:CRT_ENABLE_STDIO=0 -pragma-define:REGISTER_SP=0x73B8  -pragma-define:CLIB_FOPEN_MAX=0 -pragma-define:fputc_cons=0 -pragma-define:CLIB_DEFAULT_SCREEN_MODE=-1 -L../os7lib -los7 -o$(TARGET_EXEC) -create-app 
 ASFLAGS=+coleco
 
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)

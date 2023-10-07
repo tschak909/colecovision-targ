@@ -13,6 +13,8 @@
 #include "lives.h"
 #include "scores.h"
 #include "player_headers.h"
+#include "targ.h"
+#include "wummel.h"
 
 #define BOARD_POS 96
 
@@ -28,7 +30,15 @@ void game(void)
   lives();
   scores();
   nametable_board(BOARD_POS);
+  targ_reset();
+  wummel_reset();
   blank(true);
+
   while(1)
-    targ();
+    {
+      SignalNum wait = request_signal(1,false);
+      targ();
+      wummel();
+      while (!test_signal(wait));
+    }
 }

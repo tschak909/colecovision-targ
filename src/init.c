@@ -13,7 +13,7 @@
 #include <stdbool.h>
 #include "init.h"
 
-#define QUEUE_SIZE 16
+#define QUEUE_SIZE 17
 
 TimerTable tt[8];
 TimerData td[2];
@@ -25,12 +25,15 @@ static void vdp_nmi(void)
   M_PRESERVE_ALL;
   time_mgr();
   writer();
+  wr_spr_nm_tbl(32);
   VDP_STATUS_BYTE = read_register();
   M_RESTORE_ALL;
 }
 
 void init(void)
 {
+  init_spr_order(32);
+  MUX_SPRITES=true;
   init_timer(&tt,&td);
   init_writer(&deferred_writer_queue,QUEUE_SIZE);
   add_raster_int(vdp_nmi);

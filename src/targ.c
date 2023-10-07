@@ -8,92 +8,152 @@
 
 #include <stdlib.h>
 #include <os7.h>
+#include <arch/coleco.h>
 #include "patterns.h"
 
-SMOFrame(2) TargFrame;
-SMOOldScreen(2) TargOldScreen;
-SMOGraphics(9,TargFrame) TargGraphics;
-
-// Extents must be at least 1, 0 causes a pre-decrement wrap to 255
-// The frame objects.
-const TargFrame targFrame0 = {1,2,{0x60,0x61}};
-const TargFrame targFrame1 = {1,2,{0x62,0x63}};
-const TargFrame targFrame2 = {1,2,{0x64,0x65}};
-const TargFrame targFrame3 = {1,2,{0x66,0x67}};
-const TargFrame targFrame4 = {1,2,{0x68,0x69}};
-const TargFrame targFrame5 = {1,2,{0x6a,0x6b}};
-const TargFrame targFrame6 = {1,2,{0x6c,0x6d}};
-const TargFrame targFrame7 = {1,2,{0x6e,0x6f}};
-const TargFrame targFrame8 = {1,2,{0x70,0x71}};
-
-// The Targ graphic object
-const TargGraphics targGraphics=
-  {
-    0,
-    0x60,
-    18,
-    _targ_down_patterns,
-    {targFrame0,targFrame1,targFrame2,targFrame3,targFrame4,targFrame5,targFrame6,targFrame7,targFrame8}
-  };
-
-// The 10 targStatus objects (x, y, frame, etc.)
-SMOStatus targStatus[10];
-
-// The 10 targOldScreen objects (see above)
-TargOldScreen targOldScreen[10];
-
-// The 10 top level SEMI-MOBILE objects
-const SMO targSMO[10];
+#define UP 0x00
+#define RIGHT 0x01
+#define DOWN 0x02
+#define LEFT 0x03
 
 /**
- * @brief since SMO is in RAM, we have to initialize it dynamically
+ * @brief the state objects for each targ
  */
-void targ_init(void)
-{
-  for (int i=0;i<10;i++)
+static SprStatus targ_status[10];
+
+/**
+ * @brief the frame objects mapping sprite generators and colors to each frame
+ */
+static const SprFrame targ_frame[4] =
+  {
     {
-      targSMO[i].graphics_addr=&targGraphics;
-      targSMO[i].status_addr=&targStatus[i];
-      targSMO[i].old_screen_addr=&targOldScreen[i];
+      DARK_RED,       // color to use for sprite
+      0               // generator offset to use for frame
+    },
+    {
+      DARK_RED,
+      1
+    },
+    {
+      DARK_RED,
+      2
+    },
+    {
+      DARK_RED,
+      3
+    }
+  };
+
+/**
+ * @brief the graphics object mapping generators in our rom to their place in the sprite generator table
+ */
+static const SprGraphics targ_graphics =
+  {
+    SPRITE,            // Object type is SPRITE
+    0x01,              // First sprite pattern generator used is 0x05
+    targ_generators,   // pointer to targ generator patterns in our ROM
+    4,                 // Number of generators to copy
+    targ_frame         // pointer to previously defined targ frame table.
+  };
+
+/**
+ * @brief the top level targ objects
+ */
+static const SprObj targ_obj[10] = 
+  {
+    {
+      targ_graphics,   // ptr to graphics object
+      &targ_status[0], // ptr to frame object
+      1
+    },
+    {
+      targ_graphics,   // ptr to graphics object
+      &targ_status[1], // ptr to frame object
+      2
+    },
+    {
+      targ_graphics,   // ptr to graphics object
+      &targ_status[2], // ptr to frame object
+      3
+    },
+    {
+      targ_graphics,   // ptr to graphics object
+      &targ_status[3], // ptr to frame object
+      4
+    },
+    {
+      targ_graphics,   // ptr to graphics object
+      &targ_status[4], // ptr to frame object
+      5
+    },
+    {
+      targ_graphics,   // ptr to graphics object
+      &targ_status[5], // ptr to frame object
+      6
+    },
+    {
+      targ_graphics,   // ptr to graphics object
+      &targ_status[6], // ptr to frame object
+      7
+    },
+    {
+      targ_graphics,   // ptr to graphics object
+      &targ_status[7], // ptr to frame object
+      8
+    },
+    {
+      targ_graphics,   // ptr to graphics object
+      &targ_status[8], // ptr to frame object
+      9
+    },
+    {
+      targ_graphics,   // ptr to graphics object
+      &targ_status[9], // ptr to frame object
+      10
+    }
+  };
+
+/**
+ * @brief Reset targs to their initial positions, and copy targ data into VRAM
+ */
+void targ_reset(void)
+{
+  // Initial X position table
+  unsigned char rx[10] = {16,40,64,88,112,136,160,184,208,232};
+
+  // Reset positions to start based on table above
+  for (unsigned char i=0;i<10;i++)
+    {
+      // move generators from ROM into VRAM
+      activate(targ_obj[i],true);
+
+      targ_status[i].frame=DOWN;
+      targ_status[i].x = rx[i];
+      targ_status[i].y = 40;
     }
 }
 
 /**
- * @brief plot 10 targs, and go down the screen
+ * @brief update targ positions
  */
 void targ(void)
 {
-  targ_init();
-
-  // Set initial positions
-  for (int i=0;i<10;i++)
+  for (unsigned char i=0;i<10;i++)
     {
-      activate(&targSMO[i],false);
-      targStatus[i].x=(i*24)+16;
-      targStatus[i].y=40;
-      targStatus[i].frame=0;
+      targ_status[i].y+=1;
+
+      if (targ_status[i].y>176)
+	targ_status[i].y=40;
+            
+      put_obj(targ_obj[i],0);
     }
 
-  // I turn this on, and all hell breaks loose. Why?!
-  /* DEFER_WRITES=true; */
-  
-  // The main loop here, update position
-  while(true)
+  // Rotate sprite order so all sprites can be seen
+  // FIXME: move this into its own block of code
+  for (unsigned char i=0;i<15;i++)
     {
-      for (int i=0;i<10;i++)
-	{
-	  if (targStatus[i].frame==0x08)
-	    {
-	      targStatus[i].frame=0;
-	      targStatus[i].y+=8;
-	      if (targStatus[i].y>160)
-		return;
-	    }
-	  else
-	    targStatus[i].frame+=2;
-
-	  put_obj(&targSMO[i],0);
-	}
-
+      os7_sprite_order_table[i+1] -= 0x04;
+      os7_sprite_order_table[i+1] &= 0x0F;
     }
 }
+
