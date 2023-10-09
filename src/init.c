@@ -26,6 +26,7 @@ static void vdp_nmi(void)
   time_mgr();
   writer();
   wr_spr_nm_tbl(32);
+  poller();
   VDP_STATUS_BYTE = read_register();
   M_RESTORE_ALL;
 }
