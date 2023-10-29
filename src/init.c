@@ -15,16 +15,13 @@
 
 #define QUEUE_SIZE 17
 
-TimerTable tt[8];
+TimerTable tt[16];
 TimerData td[2];
-
-unsigned char deferred_writer_queue[QUEUE_SIZE*WRITER_QUEUE_ENTRY_SIZE];
 
 static void vdp_nmi(void)
 {
   M_PRESERVE_ALL;
   time_mgr();
-  writer();
   wr_spr_nm_tbl(32);
   poller();
   VDP_STATUS_BYTE = read_register();
@@ -36,6 +33,5 @@ void init(void)
   init_spr_order(32);
   MUX_SPRITES=true;
   init_timer(&tt,&td);
-  init_writer(&deferred_writer_queue,QUEUE_SIZE);
   add_raster_int(vdp_nmi);
 }

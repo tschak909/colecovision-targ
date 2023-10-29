@@ -7,19 +7,32 @@
  */
 
 #include <stdlib.h>
+#include <stdbool.h>
 #include <os7.h>
 #include <arch/coleco.h>
+#include <math/math_fix16.h>
 #include "patterns.h"
+#include "targ.h"
+#include "velocity.h"
 
-#define UP 0x00
-#define RIGHT 0x01
-#define DOWN 0x02
-#define LEFT 0x03
+#define TARG_MAX 10
+
+/**
+ * @brief Holds current horizontal/vertical velocity for each targ
+ */
+Velocity targ_velocity[TARG_MAX];
+
+/**
+ * @brief holds whether each targ is alive (1) or dead (0)
+ */
+bool targ_alive[TARG_MAX];
+
+
 
 /**
  * @brief the state objects for each targ
  */
-static SprStatus targ_status[10];
+static SprStatus targ_status[TARG_MAX];
 
 /**
  * @brief the frame objects mapping sprite generators and colors to each frame
@@ -119,17 +132,72 @@ static const SprObj targ_obj[10] =
 void targ_reset(void)
 {
   // Initial X position table
-  unsigned char rx[10] = {16,40,64,88,112,136,160,184,208,232};
+  unsigned char rx[TARG_MAX] = {16,40,64,88,112,136,160,184,208,232};
 
   // Reset positions to start based on table above
-  for (unsigned char i=0;i<10;i++)
+  for (unsigned char i=0;i<TARG_MAX;i++)
     {
       // move generators from ROM into VRAM
       activate(targ_obj[i],true);
 
+      targ_alive[i]=true;
       targ_status[i].frame=DOWN;
       targ_status[i].x = rx[i];
       targ_status[i].y = 40;
+    }
+}
+
+/**
+ * @brief Multiplex targ sprites
+ */
+void targ_mux_sprites(void)
+{
+  for (unsigned char i=0;i<15;i++)
+    {
+      os7_sprite_order_table[i+1] -= 0x04;
+      os7_sprite_order_table[i+1] &= 0x0F;
+    }
+}
+
+/**
+ * @brief change velocity
+ */
+void targ_change_velocity(SprStatus *s, Velocity *v)
+{
+}
+
+/**
+ * @brief Check for collisions
+ */
+void targ_check_collisions(void)
+{
+  for (unsigned char i=0;i<TARG_MAX;i++)
+    {
+      unsigned char o = (targ_status[i].y >> 3) + (targ_status[i].x >> 3); // convert sprite to bg tile offset
+      char t;
+
+      // Determine adjacent tile to check for barrier (building or city wall)
+      switch (targ_status[i].frame)
+	{
+	case UP:
+	  o -= 32;
+	  break;
+	case RIGHT:
+	  o++;
+	  break;
+	case DOWN:
+	  o += 32;
+	  break;
+	case LEFT:
+	  o--;
+	  break;
+	}
+
+      // Read adjacent tile
+      read_vram(&t,o,1);
+
+      if (t!=0x20) // next tile is not empty space, change direction
+	targ_change_velocity(&targ_status[i],&targ_velocity[i]);      
     }
 }
 
@@ -138,22 +206,14 @@ void targ_reset(void)
  */
 void targ(void)
 {
-  for (unsigned char i=0;i<10;i++)
+  for (unsigned char i=0;i<TARG_MAX;i++)
     {
-      targ_status[i].y+=1;
+      if (!targ_alive[i])
+	targ_status[i].x = targ_status[i].y = 0xFFFF; // put off screen, if dead.
 
-      if (targ_status[i].y>176)
-	targ_status[i].y=40;
-            
       put_obj(targ_obj[i],0);
     }
 
-  // Rotate sprite order so all sprites can be seen
-  // FIXME: move this into its own block of code
-  for (unsigned char i=0;i<15;i++)
-    {
-      os7_sprite_order_table[i+1] -= 0x04;
-      os7_sprite_order_table[i+1] &= 0x0F;
-    }
+  targ_mux_sprites();
 }
 
